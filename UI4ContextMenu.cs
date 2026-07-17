@@ -194,6 +194,27 @@ namespace StartUI4Controls
         }
     }
 
+    public static class GeometryHelper
+    {
+        public static Geometry GetOutlinedGeometry(this RectangleGeometry rectGeo)
+        {
+            Rect rect = rectGeo.Rect;
+            PathGeometry path = new PathGeometry();
+            PathFigure figure = new PathFigure
+            {
+                StartPoint = new Point(rect.Left, rect.Top),
+                IsClosed = true,
+                IsFilled = false
+            };
+            figure.Segments.Add(new LineSegment(new Point(rect.Right, rect.Top), true));
+            figure.Segments.Add(new LineSegment(new Point(rect.Right, rect.Bottom), true));
+            figure.Segments.Add(new LineSegment(new Point(rect.Left, rect.Bottom), true));
+            path.Figures.Add(figure);
+            path.Freeze();
+            return path;
+        }
+    }
+
     public static class UI4MenuIcons
     {
         private static ImageSource _undoIcon;
@@ -227,13 +248,20 @@ namespace StartUI4Controls
             }
         }
 
-        private static ImageSource CreateIconFromGeometry(Geometry geometry, Brush brush)
+        private static ImageSource CreateIconFromGeometry(Geometry geometry, Brush strokeBrush)
         {
-            var drawing = new GeometryDrawing(brush, null, geometry);
-            var drawingGroup = new DrawingGroup();
+            Pen pen = new Pen(strokeBrush, 1.2)
+            {
+                LineJoin = PenLineJoin.Round,
+                StartLineCap = PenLineCap.Round,
+                EndLineCap = PenLineCap.Round
+            };
+            GeometryDrawing drawing = new GeometryDrawing(null, pen, geometry);
+            DrawingGroup drawingGroup = new DrawingGroup();
             drawingGroup.Children.Add(drawing);
-            var image = new DrawingImage(drawingGroup);
+            DrawingImage image = new DrawingImage(drawingGroup);
             image.Freeze();
+            pen.Freeze();
             return image;
         }
 
@@ -302,8 +330,8 @@ namespace StartUI4Controls
         private static ImageSource CreateCopyIcon()
         {
             GeometryGroup group = new GeometryGroup();
-            group.Children.Add(new RectangleGeometry(new Rect(6, 2, 10, 12), 1, 1));
-            group.Children.Add(new RectangleGeometry(new Rect(2, 6, 10, 12), 1, 1));
+            group.Children.Add(new RectangleGeometry(new Rect(6, 2, 10, 12), 1, 1).GetOutlinedGeometry());
+            group.Children.Add(new RectangleGeometry(new Rect(2, 6, 10, 12), 1, 1).GetOutlinedGeometry());
             group.Freeze();
             return CreateIconFromGeometry(group, Brushes.Black);
         }
@@ -311,8 +339,8 @@ namespace StartUI4Controls
         private static ImageSource CreatePasteIcon()
         {
             GeometryGroup group = new GeometryGroup();
-            group.Children.Add(new RectangleGeometry(new Rect(7, 1, 6, 3), 1, 1));
-            group.Children.Add(new RectangleGeometry(new Rect(4, 4, 12, 14), 1, 1));
+            group.Children.Add(new RectangleGeometry(new Rect(7, 1, 6, 3), 1, 1).GetOutlinedGeometry());
+            group.Children.Add(new RectangleGeometry(new Rect(4, 4, 12, 14), 1, 1).GetOutlinedGeometry());
             group.Freeze();
             return CreateIconFromGeometry(group, Brushes.Black);
         }
@@ -320,8 +348,8 @@ namespace StartUI4Controls
         private static ImageSource CreateDeleteIcon()
         {
             GeometryGroup group = new GeometryGroup();
-            group.Children.Add(new RectangleGeometry(new Rect(3, 4, 14, 2), 0.5, 0.5));
-            group.Children.Add(new RectangleGeometry(new Rect(5, 6, 10, 12), 0, 0));
+            group.Children.Add(new RectangleGeometry(new Rect(3, 4, 14, 2), 0.5, 0.5).GetOutlinedGeometry());
+            group.Children.Add(new RectangleGeometry(new Rect(5, 6, 10, 12), 0, 0).GetOutlinedGeometry());
             group.Children.Add(new LineGeometry(new Point(8, 9), new Point(8, 15)));
             group.Children.Add(new LineGeometry(new Point(12, 9), new Point(12, 15)));
             group.Freeze();
@@ -331,10 +359,10 @@ namespace StartUI4Controls
         private static ImageSource CreateSelectAllIcon()
         {
             GeometryGroup group = new GeometryGroup();
-            group.Children.Add(new RectangleGeometry(new Rect(2, 2, 7, 7), 1, 1));
-            group.Children.Add(new RectangleGeometry(new Rect(11, 2, 7, 7), 1, 1));
-            group.Children.Add(new RectangleGeometry(new Rect(2, 11, 7, 7), 1, 1));
-            group.Children.Add(new RectangleGeometry(new Rect(11, 11, 7, 7), 1, 1));
+            group.Children.Add(new RectangleGeometry(new Rect(2, 2, 7, 7), 1, 1).GetOutlinedGeometry());
+            group.Children.Add(new RectangleGeometry(new Rect(11, 2, 7, 7), 1, 1).GetOutlinedGeometry());
+            group.Children.Add(new RectangleGeometry(new Rect(2, 11, 7, 7), 1, 1).GetOutlinedGeometry());
+            group.Children.Add(new RectangleGeometry(new Rect(11, 11, 7, 7), 1, 1).GetOutlinedGeometry());
             group.Freeze();
             return CreateIconFromGeometry(group, Brushes.Black);
         }
@@ -351,7 +379,7 @@ namespace StartUI4Controls
         public Thickness ItemPadding { get; set; } = new Thickness(12, 8, 12, 8);
         public Color BorderColor { get; set; } = Color.FromArgb(255, 200, 200, 220);
         public Brush Background { get; set; } = Brushes.White;
-        public Color HoverBackground { get; set; } = Color.FromArgb(180, 245, 245, 245);
+        public Color HoverBackground { get; set; } = Color.FromArgb(10, 0, 0, 0);
 
         public bool IsOpen => _popup?.IsOpen ?? false;
 

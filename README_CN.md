@@ -24,7 +24,7 @@
 
 **StartUI4.WPF** 是一款基于 WPF .NET 6 开发的现代化 UI 控件库，完美契合 WinUI Fluent Design 设计语言。只需简单配置即可使用，支持 Windows 7 / 10 / 11 操作系统。
 
-- **版本**: 1.0.3
+- **版本**: 1.0.5
 - **作者**: KS.STUDIO
 - **目标框架**: .NET 6 (net6.0-windows7.0)
 - **NuGet 包**: StartUI4.WPF
@@ -81,6 +81,8 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 |---------|------|------|
 | [UI4Button](#ui4button-按钮) | Button | 现代化按钮，支持渐变和悬停效果 |
 | [UI4CheckBox](#ui4checkbox-复选框) | CheckBox | 自定义样式复选框 |
+| [UI4Radio](#ui4radio-单选框) | RadioButton | 自定义样式单选框 |
+| [UI4Switch](#ui4switch-开关) | ToggleButton | 渐变风格的现代化开关控件 |
 | [UI4TextBox](#ui4textbox-文本输入框) | TextBox | 带焦点渐变、清除按钮的文本框 |
 | [UI4TextBlock](#ui4textblock-文本块) | ContentControl | 带阴影效果的文本显示控件 |
 | [UI4ComboBox](#ui4combobox-下拉框) | ComboBox | 自定义样式下拉选择框 |
@@ -90,11 +92,12 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 | [UI4CircleSlider](#ui4circleslider-环形滑块) | ContentControl | 可交互的环形滑块 |
 | [UI4Panel](#ui4panel-面板容器) | ContentControl | 带阴影和悬停缩放的容器面板 |
 | [UI4Pivot](#ui4pivot-选项卡) | Selector | 选项卡控件，带滑动切换动画 |
+| [UI4Tab](#ui4tab-浏览器标签) | Selector | 浏览器风格标签控件，支持关闭和新增按钮 |
 | [UI4NavigationView](#ui4navigationview-导航视图) | ItemsControl | 侧边栏导航控件 |
 | [UI4ListBox](#ui4listbox-列表框) | ListBox | 自定义样式列表，支持多种列表样式 |
 | [UI4ListView](#ui4listview-列表视图) | ListBox | 卡片式列表视图 |
 | [UI4GridView](#ui4gridview-网格视图) | ListBox | 网格布局卡片视图，自适应列数 |
-| [UI4ScrollViewer](#ui4scrollviewer-滚动视图) | ScrollViewer | 自定义滚动条样式 |
+| [UI4ScrollViewer](#ui4scrollviewer-滚动视图) | ScrollViewer | 自定义滚动条，支持平滑滚动动画 |
 | [UI4MessageBox](#ui4messagebox-消息框) | Window | 自定义消息对话框 |
 | [UI4CodeEditor](#ui4codeeditor-代码编辑器) | RichTextBox | 带语法高亮的代码编辑器 |
 
@@ -202,6 +205,120 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 
 ---
 
+### UI4Radio 单选框
+
+自定义样式的单选框控件，与 UI4CheckBox 风格一致，支持分组互斥。
+
+**继承自**: `RadioButton`
+
+#### 可设置属性
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|-------|------|--------|------|
+| `CheckBackground` | `Color` | `#1D4ED8` (29,78,216) | 选中时填充色 |
+| `BorderNormalColor` | `Color` | `#B4B4C8` (180,180,200) | 未选中时边框色 |
+| `DotColor` | `Color` | `White` | 选中时内圆点颜色 |
+| `BoxSize` | `double` | `18` | 单选框大小（直径） |
+| `TextColor` | `Color` | `LightGray` | 未选中时文字颜色 |
+| `TextMargin` | `Thickness` | `8,0,0,0` | 文字与单选框间距 |
+
+#### 继承属性
+
+继承 `RadioButton` 的所有属性，如 `Content`、`IsChecked`、`GroupName`、`Foreground`、`FontSize` 等。
+
+#### 示例代码
+
+```xml
+<!-- 基础单选框 -->
+<ui:UI4Radio Content="选项一" IsChecked="True" GroupName="Group1" Margin="5" />
+<ui:UI4Radio Content="选项二" GroupName="Group1" Margin="5" />
+<ui:UI4Radio Content="选项三" GroupName="Group1" Margin="5" />
+
+<!-- 自定义颜色 -->
+<ui:UI4Radio Content="绿色主题" 
+             CheckBackground="Green" 
+             BorderNormalColor="DarkGreen"
+             DotColor="White"
+             BoxSize="20" />
+
+<!-- 自定义文字颜色和间距 -->
+<ui:UI4Radio Content="自定义样式" 
+             TextColor="Black"
+             TextMargin="12,0,0,0"
+             FontSize="16" />
+```
+
+#### 说明
+
+- **风格统一**：与 UI4CheckBox 视觉风格一致（相同配色方案）
+- **分组互斥**：同一 `GroupName` 下只能选中一个
+- **悬停效果**：鼠标悬停时边框颜色变化
+- **键盘支持**：支持 Tab 导航和空格键选择
+- **三态支持**：支持 `IsThreeState` 三态模式
+
+---
+
+### UI4Switch 开关
+
+现代化开关控件，渐变填充，平滑滑动动画，与 UI4Button 配色一致。
+
+**继承自**: `ToggleButton`
+
+#### 可设置属性
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|-------|------|--------|------|
+| `IsOn` | `bool` | `false` | 开关状态（同 `IsChecked`） |
+| `GradientStart` | `Color` | `#2563EB` (37,99,235) | 开启时渐变起始色 |
+| `GradientEnd` | `Color` | `#9333EA` (147,51,234) | 开启时渐变结束色 |
+| `OffBackground` | `Color` | `#C8C8D2` (200,200,210) | 关闭时背景色 |
+| `ThumbColor` | `Color` | `White` | 滑块颜色 |
+| `SwitchWidth` | `double` | `50` | 开关宽度 |
+| `SwitchHeight` | `double` | `28` | 开关高度 |
+
+#### 继承属性
+
+继承 `ToggleButton` 的所有属性，如 `IsChecked`、`Content`、`Foreground`、`FontSize`、`IsEnabled` 等。
+
+#### 示例代码
+
+```xml
+<!-- 基础开关 -->
+<ui:UI4Switch IsOn="True" />
+
+<!-- 自定义大小和颜色 -->
+<ui:UI4Switch IsOn="True"
+              SwitchWidth="60"
+              SwitchHeight="32"
+              GradientStart="Green"
+              GradientEnd="DarkGreen"
+              OffBackground="LightGray" />
+
+<!-- 带文字标签 -->
+<StackPanel Orientation="Horizontal">
+    <ui:UI4Switch x:Name="themeSwitch" />
+    <TextBlock Text="深色模式" VerticalAlignment="Center" Margin="8,0,0,0"/>
+</StackPanel>
+```
+
+#### 事件
+
+| 事件名 | 参数类型 | 说明 |
+|-------|---------|------|
+| `Toggled` | `RoutedEventArgs` | 开关状态切换时触发 |
+
+同时支持 `ToggleButton` 的所有事件，如 `Click`、`Checked`、`Unchecked` 等。
+
+#### 说明
+
+- **渐变填充**：开启时使用 UI4Button 默认渐变色方案
+- **平滑动画**：切换时 200ms 缓动滑动动画
+- **胶囊形状**：两端完全圆角（药丸形状）
+- **白色滑块**：白色圆形滑块，对比鲜明
+- **风格统一**：与 UI4Button 默认渐变主题一致
+
+---
+
 ### UI4TextBox 文本输入框
 
 现代化文本输入框，支持焦点渐变边框、清除按钮、自定义右键菜单、自动隐藏滚动条等特性。
@@ -266,10 +383,10 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 
 #### 特性说明
 
-- **焦点渐变边框**: 获得焦点时，边框变为渐变色彩
+- **焦点渐变边框**: 获得焦点时边框变为渐变色
 - **清除按钮**: 设置 `ShowClearButton="True"` 显示一键清除按钮
-- **自定义右键菜单**: 替换系统默认菜单，包含撤销、剪切、复制、粘贴、删除、全选
-- **自动隐藏滚动条**: 滚动时淡入，停止后淡出
+- **自定义右键菜单**: 替换系统默认菜单，含撤销、剪切、复制、粘贴、删除、全选，带图标和多语言
+- **自动隐藏滚动条**: 滚动时淡入，停止后淡出，宽度 10px
 - **悬停边框**: 鼠标悬停时边框颜色加深
 
 ---
@@ -798,6 +915,139 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 - **选中放大**: 选中项字体自动放大并加粗
 - **品牌项**: `IsBrand="True"` 的项使用品牌样式
 - **水平排列**: 选项卡水平排列在顶部
+- **可滚动 Header**: 标签超出宽度时出现横向滚动条（UI4ScrollViewer）
+
+---
+
+### UI4Tab 浏览器标签
+
+浏览器风格的标签控件，支持关闭按钮、新增按钮、图标显示，可自定义顶部背景色。
+
+**包含两个类**:
+- `UI4Tab` - 主标签控件
+- `UI4TabItem` - 标签项
+
+#### UI4Tab 可设置属性
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|-------|------|--------|------|
+| `HeaderBackground` | `Color` | `#E6E6EB` (230,230,235) | 顶部 header 区域背景色 |
+| `TabBackground` | `Color` | `Transparent` | 未选中标签背景色 |
+| `TabSelectedBackground` | `Color` | `White` | 选中标签背景色 |
+| `TabHoverBackground` | `Color` | `#1E000000` | 悬停标签背景色 |
+| `TabForeground` | `Color` | `#C8000000` | 未选中标签文字颜色 |
+| `TabSelectedForeground` | `Color` | `#FF000000` | 选中标签文字颜色 |
+| `CloseButtonColor` | `Color` | `#96000000` | 关闭按钮颜色 |
+| `TabFontSize` | `double` | `13` | 标签文字大小 |
+| `TabPadding` | `Thickness` | `12,8,8,8` | 标签内边距 |
+| `ShowAddButton` | `bool` | `true` | 是否显示右侧新增按钮 |
+| `AddButtonColor` | `Color` | `#96000000` | 新增按钮颜色 |
+| `TabCornerRadius` | `double` | `6` | 标签项圆角半径 |
+
+#### UI4TabItem 可设置属性
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|-------|------|--------|------|
+| `Header` | `object` | | 标签头部内容 |
+| `TextIcon` | `string` | `null` | 文字图标（如 Segoe MDL2 Assets 字符） |
+| `TextIconFontFamily` | `FontFamily` | `Segoe MDL2 Assets` | 文字图标字体 |
+| `ImageSource` | `ImageSource` | `null` | 图片图标（**优先显示**，优先于 TextIcon） |
+| `IconSize` | `double` | `16` | 图标大小 |
+| `IsClosable` | `bool` | `true` | 是否显示关闭按钮 |
+| `Content` | `object` | | 标签内容 |
+
+#### 事件
+
+| 事件名 | 参数类型 | 说明 |
+|-------|---------|------|
+| `AddTab` | `RoutedEventArgs` | 点击新增按钮时触发 |
+| `CloseTab` | `TabCloseRoutedEventArgs` | 点击关闭按钮时触发，`e.Handled = true` 可取消关闭 |
+
+`TabCloseRoutedEventArgs` 属性：
+- `TabItem` (`UI4TabItem`) - 被关闭的标签项
+
+#### 继承属性
+
+`UI4Tab` 继承自 `Selector`，支持 `SelectedIndex`、`SelectedItem`、`Items`、`SelectionChanged` 事件等。
+
+#### 示例代码
+
+```xml
+<!-- 基础标签控件 -->
+<ui:UI4Tab x:Name="MyTab"
+           AddTab="MyTab_AddTab"
+           CloseTab="MyTab_CloseTab">
+    
+    <!-- 文字图标标签 -->
+    <ui:UI4TabItem Header="首页" TextIcon="&#xE80F;">
+        <Grid Background="White">
+            <TextBlock Text="首页内容"/>
+        </Grid>
+    </ui:UI4TabItem>
+    
+    <!-- 图片图标标签 -->
+    <ui:UI4TabItem Header="文档" ImageSource="/Images/doc.png">
+        <Grid Background="White">
+            <TextBlock Text="文档内容"/>
+        </Grid>
+    </ui:UI4TabItem>
+    
+    <!-- 不可关闭的标签 -->
+    <ui:UI4TabItem Header="设置" TextIcon="&#xE713;" IsClosable="False">
+        <Grid Background="White">
+            <TextBlock Text="设置内容"/>
+        </Grid>
+    </ui:UI4TabItem>
+    
+</ui:UI4Tab>
+
+<!-- 自定义颜色 -->
+<ui:UI4Tab HeaderBackground="#F0F0F0"
+           TabSelectedBackground="White"
+           CloseButtonColor="Red"
+           ShowAddButton="False">
+    ...
+</ui:UI4Tab>
+```
+
+后台代码示例：
+
+```csharp
+private int _tabCount = 3;
+
+private void MyTab_AddTab(object sender, RoutedEventArgs e)
+{
+    _tabCount++;
+    var newTab = new UI4TabItem
+    {
+        Header = $"新标签 {_tabCount}",
+        TextIcon = "\uE80F",
+        Content = new TextBlock { Text = $"第 {_tabCount} 个标签内容" }
+    };
+    MyTab.Items.Add(newTab);
+    MyTab.SelectedIndex = MyTab.Items.Count - 1;
+}
+
+private void MyTab_CloseTab(object sender, TabCloseRoutedEventArgs e)
+{
+    // 阻止关闭最后一个标签
+    if (MyTab.Items.Count <= 1)
+    {
+        e.Handled = true; // 取消关闭
+    }
+}
+```
+
+#### 特性说明
+
+- **浏览器风格**: 浏览器标签设计，带圆角和关闭按钮
+- **双图标模式**: 图片图标（`ImageSource`）优先显示，无图片时显示文字图标（`TextIcon`）
+- **新增按钮**: 右侧 "+" 按钮可添加新标签（可开关）
+- **关闭按钮**: 每个标签带 × 关闭按钮（可单独控制显示）
+- **可自定义 Header**: `HeaderBackground` 控制顶部栏背景色
+- **内容切换动画**: 切换标签时滑动 + 淡入淡出动画
+- **可滚动 Header**: 标签超出宽度时出现横向滚动条
+- **可取消关闭**: 在 `CloseTab` 事件中设置 `e.Handled = true` 可阻止关闭
 
 ---
 
@@ -954,7 +1204,7 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 
 - **三种列表样式**: 无样式、圆点、数字序号
 - **数字圆圈渐变色**: `NumberCircleBackground` 支持 `Brush`，可设置渐变色
-- **自定义滚动条**: 内置自动隐藏的滚动条
+- **自定义滚动条**: 内置自动隐藏的滚动条，宽度 10px（更宽更好用）
 - **悬停/选中效果**: 可自定义各状态的背景和文字颜色
 - **数据模板支持**: 支持 `ItemTemplate` 自定义项外观
 
@@ -1021,7 +1271,7 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 - **卡片式布局**: 每一项都是带阴影的卡片
 - **悬停动画**: 悬停时卡片边框变色 + 缩放
 - **阴影效果**: 每张卡片都有投影效果
-- **自定义滚动条**: 内置自动隐藏的滚动条
+- **自定义滚动条**: 内置自动隐藏的滚动条，宽度 10px
 - **完整的数据绑定支持**: 支持 `ItemsSource` 和 `ItemTemplate`
 
 ---
@@ -1118,23 +1368,38 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 - **卡片式布局**: 每一项都是带阴影的卡片
 - **悬停动画**: 悬停时卡片边框变色 + 缩放
 - **阴影效果**: 每张卡片都有投影效果
-- **自定义滚动条**: 内置自动隐藏的滚动条
+- **自定义滚动条**: 内置自动隐藏的滚动条，宽度 10px
 - **基于 UniformGrid**: 使用均匀网格布局
 
 ---
 
 ### UI4ScrollViewer 滚动视图
 
-自定义样式的滚动视图控件，内置自动隐藏的滚动条。
+自定义样式的滚动视图控件，内置自动隐藏的滚动条和平滑滚动动画。
 
 **继承自**: `ScrollViewer`
+
+#### 可设置属性
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|-------|------|--------|------|
+| `IsSmoothScrollEnabled` | `bool` | `true` | 是否启用平滑滚动动画 |
+
+#### 公共方法
+
+| 方法名 | 返回值 | 说明 |
+|-------|--------|------|
+| `SmoothScrollToVerticalOffset(double offset)` | `void` | 平滑滚动到指定垂直位置 |
+| `SmoothScrollToHorizontalOffset(double offset)` | `void` | 平滑滚动到指定水平位置 |
 
 #### 特性说明
 
 - **自动隐藏滚动条**: 滚动时淡入，停止 1.5 秒后淡出
 - **圆角滑块**: 滚动条滑块为圆角矩形
-- **细滚动条**: 宽度仅 5px，不占空间
+- **更宽滚动条**: 宽度 10px（原 5px + 增加 5px），更易点击和拖动
 - **悬停显示**: 鼠标悬停在滚动条上时保持显示
+- **平滑滚动**: 鼠标滚轮滚动使用三次缓出动画（200ms），手感更丝滑
+- **平滑滚动 API**: `SmoothScrollToVerticalOffset` / `SmoothScrollToHorizontalOffset` 支持代码调用平滑滚动
 
 #### 示例代码
 
@@ -1305,4 +1570,4 @@ else
 
 ## 许可证
 
-© KS.STUDIO - StartUI4.WPF v1.0.3
+© KS.STUDIO - StartUI4.WPF v1.0.5

@@ -2,6 +2,9 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Markup;
 using System.Xml;
 
@@ -11,20 +14,143 @@ namespace StartUI4Controls
     public class UI4ScrollViewer : ScrollViewer
     {
         private static Style _scrollViewerStyle;
+        private double _targetVerticalOffset;
+        private double _targetHorizontalOffset;
+        private bool _isAnimatingVertical;
+        private bool _isAnimatingHorizontal;
+        private const double AnimationDuration = 100;
+
+        public static readonly DependencyProperty IsSmoothScrollEnabledProperty =
+            DependencyProperty.Register(
+                nameof(IsSmoothScrollEnabled),
+                typeof(bool),
+                typeof(UI4ScrollViewer),
+                new PropertyMetadata(true));
+
+        public bool IsSmoothScrollEnabled
+        {
+            get => (bool)GetValue(IsSmoothScrollEnabledProperty);
+            set => SetValue(IsSmoothScrollEnabledProperty, value);
+        }
 
         static UI4ScrollViewer()
         {
-
             _scrollViewerStyle = CreateScrollViewerStyleFromXaml();
         }
 
         public UI4ScrollViewer()
         {
-
             if (_scrollViewerStyle != null)
             {
                 Style = _scrollViewerStyle;
             }
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            _targetVerticalOffset = VerticalOffset;
+            _targetHorizontalOffset = HorizontalOffset;
+        }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            if (!IsSmoothScrollEnabled)
+            {
+                base.OnMouseWheel(e);
+                return;
+            }
+
+            e.Handled = true;
+
+            double scrollAmount = e.Delta;
+            double lineHeight = 16;
+            double totalDelta = scrollAmount / 120.0 * 3 * lineHeight;
+
+            _targetVerticalOffset = Math.Max(0, Math.Min(ScrollableHeight, _targetVerticalOffset - totalDelta));
+
+            AnimateVerticalOffset(VerticalOffset, _targetVerticalOffset);
+        }
+
+        private void AnimateVerticalOffset(double from, double to)
+        {
+            if (Math.Abs(from - to) < 0.1) return;
+
+            double startTime = Environment.TickCount;
+            double duration = AnimationDuration;
+            double startVal = from;
+            double endVal = to;
+
+            EventHandler renderHandler = null;
+            renderHandler = (s, e) =>
+            {
+                double elapsed = Environment.TickCount - startTime;
+                if (elapsed >= duration)
+                {
+                    CompositionTarget.Rendering -= renderHandler;
+                    ScrollToVerticalOffset(endVal);
+                    _isAnimatingVertical = false;
+                    return;
+                }
+
+                double t = elapsed / duration;
+                double eased = EaseOutCubic(t);
+                double currentVal = startVal + (endVal - startVal) * eased;
+                ScrollToVerticalOffset(currentVal);
+            };
+
+            CompositionTarget.Rendering += renderHandler;
+            _isAnimatingVertical = true;
+        }
+
+        private static double EaseOutCubic(double t)
+        {
+            return 1 - Math.Pow(1 - t, 3);
+        }
+
+        public void SmoothScrollToVerticalOffset(double offset)
+        {
+            offset = Math.Max(0, Math.Min(ScrollableHeight, offset));
+            _targetVerticalOffset = offset;
+            AnimateVerticalOffset(VerticalOffset, offset);
+        }
+
+        public void SmoothScrollToHorizontalOffset(double offset)
+        {
+            offset = Math.Max(0, Math.Min(ScrollableWidth, offset));
+            _targetHorizontalOffset = offset;
+            AnimateHorizontalOffset(HorizontalOffset, offset);
+        }
+
+        private void AnimateHorizontalOffset(double from, double to)
+        {
+            if (Math.Abs(from - to) < 0.1) return;
+
+            double startTime = Environment.TickCount;
+            double duration = AnimationDuration;
+            double startVal = from;
+            double endVal = to;
+
+            EventHandler renderHandler = null;
+            renderHandler = (s, e) =>
+            {
+                double elapsed = Environment.TickCount - startTime;
+                if (elapsed >= duration)
+                {
+                    CompositionTarget.Rendering -= renderHandler;
+                    ScrollToHorizontalOffset(endVal);
+                    _isAnimatingHorizontal = false;
+                    return;
+                }
+
+                double t = elapsed / duration;
+                double eased = EaseOutCubic(t);
+                double currentVal = startVal + (endVal - startVal) * eased;
+                ScrollToHorizontalOffset(currentVal);
+            };
+
+            CompositionTarget.Rendering += renderHandler;
+            _isAnimatingHorizontal = true;
         }
 
         private static Style CreateScrollViewerStyleFromXaml()
@@ -41,7 +167,7 @@ namespace StartUI4Controls
                 <Setter.Value>
                     <ControlTemplate TargetType='{x:Type Thumb}'>
                         <Grid>
-                            <Rectangle Fill='#50000000' RadiusX='3' RadiusY='3'/>
+                            <Rectangle Fill='#50000000' RadiusX='5' RadiusY='5'/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -83,9 +209,9 @@ namespace StartUI4Controls
             <Setter Property='Stylus.IsPressAndHoldEnabled' Value='false'/>
             <Setter Property='Stylus.IsFlicksEnabled' Value='false'/>
             <Setter Property='Background' Value='Transparent'/>
-            <Setter Property='Margin' Value='0,1,1,6'/>
-            <Setter Property='Width' Value='5'/>
-            <Setter Property='MinWidth' Value='5'/>
+            <Setter Property='Margin' Value='0,1,2,6'/>
+            <Setter Property='Width' Value='6'/>
+            <Setter Property='MinWidth' Value='6'/>
             <Setter Property='Opacity' Value='0'/>
             <Setter Property='Template'>
                 <Setter.Value>
@@ -129,9 +255,9 @@ namespace StartUI4Controls
             <Style.Triggers>
                 <Trigger Property='Orientation' Value='Horizontal'>
                     <Setter Property='Background' Value='Transparent'/>
-                    <Setter Property='Margin' Value='1,0,6,1'/>
-                    <Setter Property='Height' Value='5'/>
-                    <Setter Property='MinHeight' Value='5'/>
+                    <Setter Property='Margin' Value='2,0,6,2'/>
+                    <Setter Property='Height' Value='6'/>
+                    <Setter Property='MinHeight' Value='6'/>
                     <Setter Property='Width' Value='Auto'/>
                     <Setter Property='Opacity' Value='0'/>
                     <Setter Property='Template'>

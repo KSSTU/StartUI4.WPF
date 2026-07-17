@@ -216,9 +216,16 @@ namespace StartUI4Controls
 
             var root = new FrameworkElementFactory(typeof(DockPanel));
 
+            var headerScrollViewer = new FrameworkElementFactory(typeof(UI4ScrollViewer));
+            headerScrollViewer.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
+            headerScrollViewer.SetValue(ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
+            headerScrollViewer.SetValue(DockPanel.DockProperty, Dock.Top);
+            headerScrollViewer.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 0, 8));
+
             var itemsPresenter = new FrameworkElementFactory(typeof(ItemsPresenter));
-            itemsPresenter.SetValue(DockPanel.DockProperty, Dock.Top);
-            itemsPresenter.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 0, 8));
+            itemsPresenter.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+            headerScrollViewer.AppendChild(itemsPresenter);
 
             var contentBorder = new FrameworkElementFactory(typeof(Border));
             contentBorder.Name = "PART_ContentBorder";
@@ -232,7 +239,7 @@ namespace StartUI4Controls
             contentPresenter.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Stretch);
 
             contentBorder.AppendChild(contentPresenter);
-            root.AppendChild(itemsPresenter);
+            root.AppendChild(headerScrollViewer);
             root.AppendChild(contentBorder);
             template.VisualTree = root;
 

@@ -24,7 +24,7 @@
 
 **StartUI4.WPF** is a modern UI control library developed based on WPF .NET 6, perfectly aligned with the WinUI Fluent Design language. Easy to configure and use, supports Windows 7 / 10 / 11 operating systems.
 
-- **Version**: 1.0.3
+- **Version**: 1.0.5
 - **Author**: KS.STUDIO
 - **Target Framework**: .NET 6 (net6.0-windows7.0)
 - **NuGet Package**: StartUI4.WPF
@@ -83,6 +83,8 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 |-------------|------------|-------------|
 | [UI4Button](#ui4button) | Button | Modern button with gradient and hover effects |
 | [UI4CheckBox](#ui4checkbox) | CheckBox | Custom styled checkbox |
+| [UI4Radio](#ui4radio) | RadioButton | Custom styled radio button |
+| [UI4Switch](#ui4switch) | ToggleButton | Modern toggle switch with gradient style |
 | [UI4TextBox](#ui4textbox) | TextBox | TextBox with focus gradient, clear button |
 | [UI4TextBlock](#ui4textblock) | ContentControl | Text display control with shadow effects |
 | [UI4ComboBox](#ui4combobox) | ComboBox | Custom styled dropdown selector |
@@ -92,11 +94,12 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 | [UI4CircleSlider](#ui4circleslider) | ContentControl | Interactive circular slider |
 | [UI4Panel](#ui4panel) | ContentControl | Container panel with shadow and hover scale effects |
 | [UI4Pivot](#ui4pivot) | Selector | Tab control with slide transition animation |
+| [UI4Tab](#ui4tab) | Selector | Browser-style tab control with close and add buttons |
 | [UI4NavigationView](#ui4navigationview) | ItemsControl | Sidebar navigation control |
 | [UI4ListBox](#ui4listbox) | ListBox | Custom styled list, supports multiple list styles |
 | [UI4ListView](#ui4listview) | ListBox | Card-style list view |
 | [UI4GridView](#ui4gridview) | ListBox | Grid layout card view with adaptive columns |
-| [UI4ScrollViewer](#ui4scrollviewer) | ScrollViewer | Custom scrollbar style |
+| [UI4ScrollViewer](#ui4scrollviewer) | ScrollViewer | Custom scrollbar with smooth scrolling animation |
 | [UI4MessageBox](#ui4messagebox) | Window | Custom message dialog box |
 | [UI4CodeEditor](#ui4codeeditor) | RichTextBox | Code editor with syntax highlighting |
 
@@ -204,6 +207,120 @@ Also inherits all properties from `CheckBox`, such as `Content`, `IsChecked`, `F
 
 ---
 
+### UI4Radio
+
+A custom-styled radio button control, consistent with UI4CheckBox style, supports group mutual exclusion.
+
+**Inherits from**: `RadioButton`
+
+#### Settable Properties
+
+| Property Name | Type | Default Value | Description |
+|--------------|------|---------------|-------------|
+| `CheckBackground` | `Color` | `#1D4ED8` (29,78,216) | Fill color when selected |
+| `BorderNormalColor` | `Color` | `#B4B4C8` (180,180,200) | Border color when unselected |
+| `DotColor` | `Color` | `White` | Inner dot color when selected |
+| `BoxSize` | `double` | `18` | Radio button size (diameter) |
+| `TextColor` | `Color` | `LightGray` | Text color when unselected |
+| `TextMargin` | `Thickness` | `8,0,0,0` | Spacing between text and radio button |
+
+#### Inherited Properties
+
+Also inherits all properties from `RadioButton`, such as `Content`, `IsChecked`, `GroupName`, `Foreground`, `FontSize`, etc.
+
+#### Example Code
+
+```xml
+<!-- Basic radio buttons -->
+<ui:UI4Radio Content="Option 1" IsChecked="True" GroupName="Group1" Margin="5" />
+<ui:UI4Radio Content="Option 2" GroupName="Group1" Margin="5" />
+<ui:UI4Radio Content="Option 3" GroupName="Group1" Margin="5" />
+
+<!-- Custom color radio -->
+<ui:UI4Radio Content="Green Theme" 
+             CheckBackground="Green" 
+             BorderNormalColor="DarkGreen"
+             DotColor="White"
+             BoxSize="20" />
+
+<!-- Custom text color and spacing -->
+<ui:UI4Radio Content="Custom Style" 
+             TextColor="Black"
+             TextMargin="12,0,0,0"
+             FontSize="16" />
+```
+
+#### Feature Notes
+
+- **Consistent Style**: Matches UI4CheckBox visual style (same color scheme)
+- **Group Mutual Exclusion**: Same `GroupName` only allows one selection
+- **Hover Effect**: Border color changes on mouse hover
+- **Keyboard Support**: Supports Tab navigation and Space key selection
+- **Three-state Support**: Supports `IsThreeState` tri-state mode
+
+---
+
+### UI4Switch
+
+A modern toggle switch control with gradient fill, smooth sliding animation, consistent with UI4Button color scheme.
+
+**Inherits from**: `ToggleButton`
+
+#### Settable Properties
+
+| Property Name | Type | Default Value | Description |
+|--------------|------|---------------|-------------|
+| `IsOn` | `bool` | `false` | Switch state (same as `IsChecked`) |
+| `GradientStart` | `Color` | `#2563EB` (37,99,235) | Gradient start color when ON |
+| `GradientEnd` | `Color` | `#9333EA` (147,51,234) | Gradient end color when ON |
+| `OffBackground` | `Color` | `#C8C8D2` (200,200,210) | Background color when OFF |
+| `ThumbColor` | `Color` | `White` | Thumb (slider) color |
+| `SwitchWidth` | `double` | `50` | Switch width |
+| `SwitchHeight` | `double` | `28` | Switch height |
+
+#### Inherited Properties
+
+Also inherits all properties from `ToggleButton`, such as `IsChecked`, `Content`, `Foreground`, `FontSize`, `IsEnabled`, etc.
+
+#### Example Code
+
+```xml
+<!-- Basic switch -->
+<ui:UI4Switch IsOn="True" />
+
+<!-- Custom size and color -->
+<ui:UI4Switch IsOn="True"
+              SwitchWidth="60"
+              SwitchHeight="32"
+              GradientStart="Green"
+              GradientEnd="DarkGreen"
+              OffBackground="LightGray" />
+
+<!-- With text label -->
+<StackPanel Orientation="Horizontal">
+    <ui:UI4Switch x:Name="themeSwitch" />
+    <TextBlock Text="Dark Mode" VerticalAlignment="Center" Margin="8,0,0,0"/>
+</StackPanel>
+```
+
+#### Events
+
+| Event Name | EventArgs | Description |
+|-----------|-----------|-------------|
+| `Toggled` | `RoutedEventArgs` | Triggered when switch state changes |
+
+Also supports all events from `ToggleButton`, such as `Click`, `Checked`, `Unchecked`, etc.
+
+#### Feature Notes
+
+- **Gradient Fill**: Uses UI4Button default gradient color scheme when ON
+- **Smooth Animation**: 200ms cubic ease slide animation when toggling
+- **Capsule Shape**: Fully rounded ends (pill shape)
+- **White Thumb**: White circular slider with shadow contrast
+- **Consistent Style**: Matches UI4Button default gradient theme
+
+---
+
 ### UI4TextBox
 
 A modern text input box with focus gradient border, clear button, custom context menu, auto-hide scrollbar, and more.
@@ -270,8 +387,8 @@ Also inherits all properties from `TextBox`, such as `Text`, `FontSize`, `Foregr
 
 - **Focus Gradient Border**: Border becomes gradient colored when focused
 - **Clear Button**: Set `ShowClearButton="True"` to show one-click clear button
-- **Custom Context Menu**: Replaces system default menu with Undo, Cut, Copy, Paste, Delete, Select All
-- **Auto-hide Scrollbar**: Fades in when scrolling, fades out when stopped
+- **Custom Context Menu**: Replaces system default menu with Undo, Cut, Copy, Paste, Delete, Select All, with icons and multi-language support
+- **Auto-hide Scrollbar**: Fades in when scrolling, fades out when stopped, 10px wide
 - **Hover Border**: Border color darkens on mouse hover
 
 ---
@@ -800,6 +917,139 @@ Tab/pivot control with smooth content slide transition animation.
 - **Selected Enlargement**: Selected item font automatically enlarges and boldens
 - **Brand Item**: Items with `IsBrand="True"` use brand style
 - **Horizontal Arrangement**: Tabs arranged horizontally at the top
+- **Scrollable Header**: Horizontal scrollbar (UI4ScrollViewer) appears when tabs exceed control width
+
+---
+
+### UI4Tab
+
+Browser-style tab control with close buttons, add button, icon support, and customizable header background.
+
+**Contains two classes**:
+- `UI4Tab` - Main tab control
+- `UI4TabItem` - Tab item
+
+#### UI4Tab Settable Properties
+
+| Property Name | Type | Default Value | Description |
+|--------------|------|---------------|-------------|
+| `HeaderBackground` | `Color` | `#E6E6EB` (230,230,235) | Top header area background color |
+| `TabBackground` | `Color` | `Transparent` | Unselected tab background |
+| `TabSelectedBackground` | `Color` | `White` | Selected tab background |
+| `TabHoverBackground` | `Color` | `#1E000000` | Hover tab background |
+| `TabForeground` | `Color` | `#C8000000` | Unselected tab text color |
+| `TabSelectedForeground` | `Color` | `#FF000000` | Selected tab text color |
+| `CloseButtonColor` | `Color` | `#96000000` | Close button color |
+| `TabFontSize` | `double` | `13` | Tab font size |
+| `TabPadding` | `Thickness` | `12,8,8,8` | Tab padding |
+| `ShowAddButton` | `bool` | `true` | Whether to show the add button on the right |
+| `AddButtonColor` | `Color` | `#96000000` | Add button color |
+| `TabCornerRadius` | `double` | `6` | Tab item corner radius |
+
+#### UI4TabItem Settable Properties
+
+| Property Name | Type | Default Value | Description |
+|--------------|------|---------------|-------------|
+| `Header` | `object` | | Tab header content |
+| `TextIcon` | `string` | `null` | Text icon character (e.g. Segoe MDL2 Assets) |
+| `TextIconFontFamily` | `FontFamily` | `Segoe MDL2 Assets` | Text icon font family |
+| `ImageSource` | `ImageSource` | `null` | Image icon (**takes priority** over TextIcon) |
+| `IconSize` | `double` | `16` | Icon size |
+| `IsClosable` | `bool` | `true` | Whether to show the close button |
+| `Content` | `object` | | Tab content |
+
+#### Events
+
+| Event Name | EventArgs | Description |
+|-----------|-----------|-------------|
+| `AddTab` | `RoutedEventArgs` | Triggered when add button is clicked |
+| `CloseTab` | `TabCloseRoutedEventArgs` | Triggered when close button is clicked, `e.Handled = true` cancels close |
+
+`TabCloseRoutedEventArgs` properties:
+- `TabItem` (`UI4TabItem`) - The tab item being closed
+
+#### Inherited Properties
+
+`UI4Tab` inherits from `Selector`, supports `SelectedIndex`, `SelectedItem`, `Items`, `SelectionChanged` event, etc.
+
+#### Example Code
+
+```xml
+<!-- Basic tab control -->
+<ui:UI4Tab x:Name="MyTab"
+           AddTab="MyTab_AddTab"
+           CloseTab="MyTab_CloseTab">
+    
+    <!-- Tab with text icon -->
+    <ui:UI4TabItem Header="Home" TextIcon="&#xE80F;">
+        <Grid Background="White">
+            <TextBlock Text="Home content"/>
+        </Grid>
+    </ui:UI4TabItem>
+    
+    <!-- Tab with image icon -->
+    <ui:UI4TabItem Header="Document" ImageSource="/Images/doc.png">
+        <Grid Background="White">
+            <TextBlock Text="Document content"/>
+        </Grid>
+    </ui:UI4TabItem>
+    
+    <!-- Non-closable tab -->
+    <ui:UI4TabItem Header="Settings" TextIcon="&#xE713;" IsClosable="False">
+        <Grid Background="White">
+            <TextBlock Text="Settings content"/>
+        </Grid>
+    </ui:UI4TabItem>
+    
+</ui:UI4Tab>
+
+<!-- Custom colors -->
+<ui:UI4Tab HeaderBackground="#F0F0F0"
+           TabSelectedBackground="White"
+           CloseButtonColor="Red"
+           ShowAddButton="False">
+    ...
+</ui:UI4Tab>
+```
+
+Code-behind example:
+
+```csharp
+private int _tabCount = 3;
+
+private void MyTab_AddTab(object sender, RoutedEventArgs e)
+{
+    _tabCount++;
+    var newTab = new UI4TabItem
+    {
+        Header = $"New Tab {_tabCount}",
+        TextIcon = "\uE80F",
+        Content = new TextBlock { Text = $"Tab {_tabCount} content" }
+    };
+    MyTab.Items.Add(newTab);
+    MyTab.SelectedIndex = MyTab.Items.Count - 1;
+}
+
+private void MyTab_CloseTab(object sender, TabCloseRoutedEventArgs e)
+{
+    // Prevent closing the last tab
+    if (MyTab.Items.Count <= 1)
+    {
+        e.Handled = true; // Cancel close
+    }
+}
+```
+
+#### Feature Notes
+
+- **Browser Style**: Browser tab design with rounded corners and close buttons
+- **Dual Icon Mode**: Image icon (`ImageSource`) takes priority, falls back to text icon (`TextIcon`)
+- **Add Button**: Right-side "+" button for adding new tabs (toggleable)
+- **Close Button**: Each tab has an × close button (toggleable per tab)
+- **Customizable Header**: `HeaderBackground` controls the top bar background color
+- **Content Switch Animation**: Slide + fade animation when switching tabs
+- **Scrollable Header**: Horizontal scrollbar appears when tabs exceed width
+- **Cancellable Close**: Set `e.Handled = true` in `CloseTab` event to prevent closing
 
 ---
 
@@ -956,7 +1206,7 @@ Also inherits all properties from `ListBox`, such as `Items`, `ItemsSource`, `Se
 
 - **Three List Styles**: None, Disc, Numbered
 - **Gradient Number Circle**: `NumberCircleBackground` supports `Brush`, gradient colors can be set
-- **Custom Scrollbar**: Built-in auto-hide scrollbar
+- **Custom Scrollbar**: Built-in auto-hide scrollbar, 10px wide (wider and easier to use)
 - **Hover/Selected Effects**: Customizable background and text color for each state
 - **Data Template Support**: Supports `ItemTemplate` for custom item appearance
 
@@ -1023,7 +1273,7 @@ Also inherits all properties from `ListBox`, such as `ItemsSource`, `ItemTemplat
 - **Card-style Layout**: Each item is a card with shadow
 - **Hover Animation**: Card border color changes + scales on hover
 - **Shadow Effect**: Each card has drop shadow effect
-- **Custom Scrollbar**: Built-in auto-hide scrollbar
+- **Custom Scrollbar**: Built-in auto-hide scrollbar, 10px wide
 - **Full Data Binding Support**: Supports `ItemsSource` and `ItemTemplate`
 
 ---
@@ -1120,23 +1370,38 @@ Also inherits all properties from `ListBox`, such as `ItemsSource`, `ItemTemplat
 - **Card-style Layout**: Each item is a card with shadow
 - **Hover Animation**: Card border color changes + scales on hover
 - **Shadow Effect**: Each card has drop shadow effect
-- **Custom Scrollbar**: Built-in auto-hide scrollbar
+- **Custom Scrollbar**: Built-in auto-hide scrollbar, 10px wide
 - **Based on UniformGrid**: Uses uniform grid layout
 
 ---
 
 ### UI4ScrollViewer
 
-Custom styled scroll viewer control with built-in auto-hide scrollbar.
+Custom styled scroll viewer control with built-in auto-hide scrollbar and smooth scrolling animation.
 
 **Inherits from**: `ScrollViewer`
+
+#### Settable Properties
+
+| Property Name | Type | Default Value | Description |
+|--------------|------|---------------|-------------|
+| `IsSmoothScrollEnabled` | `bool` | `true` | Whether to enable smooth scrolling animation |
+
+#### Public Methods
+
+| Method Name | Return Value | Description |
+|------------|--------------|-------------|
+| `SmoothScrollToVerticalOffset(double offset)` | `void` | Smooth scroll to specified vertical position |
+| `SmoothScrollToHorizontalOffset(double offset)` | `void` | Smooth scroll to specified horizontal position |
 
 #### Feature Notes
 
 - **Auto-hide Scrollbar**: Fades in when scrolling, fades out 1.5 seconds after stopping
 - **Rounded Thumb**: Scrollbar thumb is rounded rectangle
-- **Thin Scrollbar**: Only 5px wide, doesn't take up space
+- **Wider Scrollbar**: 10px wide (5px original + 5px increase), easier to click and drag
 - **Hover Show**: Stays visible when mouse hovers over scrollbar
+- **Smooth Scrolling**: Mouse wheel scrolling uses cubic ease-out animation (200ms) for smoother feel
+- **Smooth Scroll API**: `SmoothScrollToVerticalOffset` / `SmoothScrollToHorizontalOffset` for programmatic smooth scrolling
 
 #### Example Code
 
@@ -1307,4 +1572,4 @@ Complete example:
 
 ## License
 
-?? KS.STUDIO - StartUI4.WPF v1.0.3
+?? KS.STUDIO - StartUI4.WPF v1.0.5

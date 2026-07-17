@@ -158,9 +158,9 @@ namespace StartUI4Controls
         <Setter Property='Stylus.IsPressAndHoldEnabled' Value='false'/>
         <Setter Property='Stylus.IsFlicksEnabled' Value='false'/>
         <Setter Property='Background' Value='Transparent'/>
-        <Setter Property='Margin' Value='0,1,1,6'/>
-        <Setter Property='Width' Value='5'/>
-        <Setter Property='MinWidth' Value='5'/>
+        <Setter Property='Margin' Value='0,1,2,6'/>
+        <Setter Property='Width' Value='6'/>
+        <Setter Property='MinWidth' Value='6'/>
         <Setter Property='Opacity' Value='0'/>
         <Setter Property='Template'>
             <Setter.Value>
@@ -204,9 +204,9 @@ namespace StartUI4Controls
         <Style.Triggers>
             <Trigger Property='Orientation' Value='Horizontal'>
                 <Setter Property='Background' Value='Transparent'/>
-                <Setter Property='Margin' Value='1,0,6,1'/>
-                <Setter Property='Height' Value='5'/>
-                <Setter Property='MinHeight' Value='5'/>
+                <Setter Property='Margin' Value='2,0,6,2'/>
+                <Setter Property='Height' Value='6'/>
+                <Setter Property='MinHeight' Value='6'/>
                 <Setter Property='Width' Value='Auto'/>
                 <Setter Property='Opacity' Value='0'/>
                 <Setter Property='Template'>

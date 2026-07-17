@@ -9,9 +9,9 @@
     <PackageId>StartUI4.WPF</PackageId>
     <Title>StartUI4.WPF</Title>
     <Authors>KS.STUDIO</Authors>
-    <FileVersion>1.0.4</FileVersion>
-    <AssemblyVersion>1.0.4</AssemblyVersion>
-    <Version>1.0.4</Version>
+    <FileVersion>1.0.5</FileVersion>
+    <AssemblyVersion>1.0.5</AssemblyVersion>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
 </Project>
