@@ -71,7 +71,7 @@ namespace StartUI4Controls
 
         public static readonly DependencyProperty InnerPaddingProperty =
             DependencyProperty.Register(nameof(InnerPadding), typeof(Thickness), typeof(UI4TextBox),
-                new PropertyMetadata(new Thickness(12, 10, 32, 10), OnStyleRefresh));
+                new PropertyMetadata(new Thickness(12, 5, 32, 5), OnStyleRefresh));
         public Thickness InnerPadding
         {
             get => (Thickness)GetValue(InnerPaddingProperty);
@@ -85,6 +85,24 @@ namespace StartUI4Controls
         {
             get => (bool)GetValue(ShowClearButtonProperty);
             set => SetValue(ShowClearButtonProperty, value);
+        }
+
+        public static readonly DependencyProperty PlaceholderTextProperty =
+            DependencyProperty.Register(nameof(PlaceholderText), typeof(string), typeof(UI4TextBox),
+                new PropertyMetadata(string.Empty, OnStyleRefresh));
+        public string PlaceholderText
+        {
+            get => (string)GetValue(PlaceholderTextProperty);
+            set => SetValue(PlaceholderTextProperty, value);
+        }
+
+        public static readonly DependencyProperty PlaceholderForegroundProperty =
+            DependencyProperty.Register(nameof(PlaceholderForeground), typeof(Brush), typeof(UI4TextBox),
+                new PropertyMetadata(new SolidColorBrush(Colors.LightGray), OnStyleRefresh));
+        public Brush PlaceholderForeground
+        {
+            get => (Brush)GetValue(PlaceholderForegroundProperty);
+            set => SetValue(PlaceholderForegroundProperty, value);
         }
 
         private static void OnStyleRefresh(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -450,6 +468,22 @@ namespace StartUI4Controls
 
             FrameworkElementFactory grid = new FrameworkElementFactory(typeof(Grid));
 
+            FrameworkElementFactory placeholderText = new FrameworkElementFactory(typeof(TextBlock));
+            placeholderText.SetBinding(TextBlock.TextProperty, new Binding(nameof(PlaceholderText)) { RelativeSource = RelativeSource.TemplatedParent });
+            placeholderText.SetBinding(TextBlock.ForegroundProperty, new Binding(nameof(PlaceholderForeground)) { RelativeSource = RelativeSource.TemplatedParent });
+            placeholderText.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(FontSize)) { RelativeSource = RelativeSource.TemplatedParent });
+            placeholderText.SetBinding(TextBlock.FontFamilyProperty, new Binding(nameof(FontFamily)) { RelativeSource = RelativeSource.TemplatedParent });
+            placeholderText.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            placeholderText.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+            placeholderText.SetValue(FrameworkElement.MarginProperty, new Thickness(14, 0, 0, 0));
+            placeholderText.SetValue(Panel.ZIndexProperty, 0);
+            placeholderText.SetBinding(UIElement.VisibilityProperty, new Binding(nameof(Text))
+            {
+                RelativeSource = RelativeSource.TemplatedParent,
+                Converter = new PlaceholderVisibilityConverter()
+            });
+            grid.AppendChild(placeholderText);
+
             FrameworkElementFactory scrollViewer = new FrameworkElementFactory(typeof(ScrollViewer));
             scrollViewer.Name = "PART_ContentHost";
             scrollViewer.SetValue(Control.BorderThicknessProperty, new Thickness(0));
@@ -531,6 +565,17 @@ namespace StartUI4Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             => (value is bool b && b) ? Visibility.Visible : Visibility.Collapsed;
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
+
+    public class PlaceholderVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string? text = value as string;
+            return string.IsNullOrEmpty(text) ? Visibility.Visible : Visibility.Collapsed;
+        }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             => throw new NotImplementedException();
     }

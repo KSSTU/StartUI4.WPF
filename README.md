@@ -24,7 +24,7 @@
 
 **StartUI4.WPF** is a modern UI control library developed based on WPF .NET 6, perfectly aligned with the WinUI Fluent Design language. Easy to configure and use, supports Windows 7 / 10 / 11 operating systems.
 
-- **Version**: 1.0.5
+- **Version**: 1.0.6
 - **Author**: KS.STUDIO
 - **Target Framework**: .NET 6 (net6.0-windows7.0)
 - **NuGet Package**: StartUI4.WPF
@@ -339,6 +339,8 @@ A modern text input box with focus gradient border, clear button, custom context
 | `TextColor` | `Color` | `#1E1E1E` (30,30,30) | Text color |
 | `InnerPadding` | `Thickness` | `12,10,32,10` | Internal content padding |
 | `ShowClearButton` | `bool` | `false` | Whether to show the clear button |
+| `PlaceholderText` | `string` | `""` | Placeholder text displayed when text is empty |
+| `PlaceholderForeground` | `Brush` | `LightGray` | Placeholder text color |
 
 #### Inherited Properties
 
@@ -381,6 +383,15 @@ Also inherits all properties from `TextBox`, such as `Text`, `FontSize`, `Foregr
                EditBackground="#FFF8F8F8"
                BorderNormalColor="#FFCCCCCC"
                Text="Custom style" />
+
+<!-- Textbox with placeholder -->
+<ui:UI4TextBox Width="300"
+               PlaceholderText="Enter your username..." />
+
+<!-- Custom placeholder color -->
+<ui:UI4TextBox Width="300"
+               PlaceholderText="Enter password..."
+               PlaceholderForeground="Gray" />
 ```
 
 #### Feature Notes
@@ -390,6 +401,7 @@ Also inherits all properties from `TextBox`, such as `Text`, `FontSize`, `Foregr
 - **Custom Context Menu**: Replaces system default menu with Undo, Cut, Copy, Paste, Delete, Select All, with icons and multi-language support
 - **Auto-hide Scrollbar**: Fades in when scrolling, fades out when stopped, 10px wide
 - **Hover Border**: Border color darkens on mouse hover
+- **Placeholder Support**: `PlaceholderText` + `PlaceholderForeground`, auto-hides when text is entered
 
 ---
 
@@ -1572,4 +1584,4 @@ Complete example:
 
 ## License
 
-?? KS.STUDIO - StartUI4.WPF v1.0.5
+?? KS.STUDIO - StartUI4.WPF v1.0.6

@@ -24,7 +24,7 @@
 
 **StartUI4.WPF** 是一款基于 WPF .NET 6 开发的现代化 UI 控件库，完美契合 WinUI Fluent Design 设计语言。只需简单配置即可使用，支持 Windows 7 / 10 / 11 操作系统。
 
-- **版本**: 1.0.5
+- **版本**: 1.0.6
 - **作者**: KS.STUDIO
 - **目标框架**: .NET 6 (net6.0-windows7.0)
 - **NuGet 包**: StartUI4.WPF
@@ -337,6 +337,8 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 | `TextColor` | `Color` | `#1E1E1E` (30,30,30) | 文字颜色 |
 | `InnerPadding` | `Thickness` | `12,10,32,10` | 内部内容内边距 |
 | `ShowClearButton` | `bool` | `false` | 是否显示清除按钮 |
+| `PlaceholderText` | `string` | `""` | 文本为空时显示的占位符文本 |
+| `PlaceholderForeground` | `Brush` | `LightGray` | 占位符文字颜色 |
 
 #### 继承属性
 
@@ -379,6 +381,15 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
                EditBackground="#FFF8F8F8"
                BorderNormalColor="#FFCCCCCC"
                Text="自定义样式" />
+
+<!-- 带占位符的文本框 -->
+<ui:UI4TextBox Width="300"
+               PlaceholderText="请输入用户名..." />
+
+<!-- 自定义占位符颜色 -->
+<ui:UI4TextBox Width="300"
+               PlaceholderText="请输入密码..."
+               PlaceholderForeground="Gray" />
 ```
 
 #### 特性说明
@@ -388,6 +399,7 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 - **自定义右键菜单**: 替换系统默认菜单，含撤销、剪切、复制、粘贴、删除、全选，带图标和多语言
 - **自动隐藏滚动条**: 滚动时淡入，停止后淡出，宽度 10px
 - **悬停边框**: 鼠标悬停时边框颜色加深
+- **占位符支持**: `PlaceholderText` + `PlaceholderForeground`，输入文字时自动隐藏
 
 ---
 
@@ -1570,4 +1582,4 @@ else
 
 ## 许可证
 
-© KS.STUDIO - StartUI4.WPF v1.0.5
+© KS.STUDIO - StartUI4.WPF v1.0.6
