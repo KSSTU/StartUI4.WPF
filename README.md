@@ -24,7 +24,7 @@
 
 **StartUI4.WPF** is a modern UI control library developed based on WPF .NET 6, perfectly aligned with the WinUI Fluent Design language. Easy to configure and use, supports Windows 7 / 10 / 11 operating systems.
 
-- **Version**: 1.0.6
+- **Version**: 1.0.7
 - **Author**: KS.STUDIO
 - **Target Framework**: .NET 6 (net6.0-windows7.0)
 - **NuGet Package**: StartUI4.WPF
@@ -99,6 +99,7 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 | [UI4ListBox](#ui4listbox) | ListBox | Custom styled list, supports multiple list styles |
 | [UI4ListView](#ui4listview) | ListBox | Card-style list view |
 | [UI4GridView](#ui4gridview) | ListBox | Grid layout card view with adaptive columns |
+| [UI4DataGrid](#ui4datagrid) | DataGrid | High-performance data grid with SQLite virtualization and custom styling |
 | [UI4ScrollViewer](#ui4scrollviewer) | ScrollViewer | Custom scrollbar with smooth scrolling animation |
 | [UI4MessageBox](#ui4messagebox) | Window | Custom message dialog box |
 | [UI4CodeEditor](#ui4codeeditor) | RichTextBox | Code editor with syntax highlighting |
@@ -1387,6 +1388,89 @@ Also inherits all properties from `ListBox`, such as `ItemsSource`, `ItemTemplat
 
 ---
 
+### UI4DataGrid
+
+High-performance data grid control with SQLite-backed virtualized loading, custom styled appearance, auto-hide scrollbars, and built-in context menu. Supports loading millions of rows smoothly via paged virtualization.
+
+**Inherits from**: `DataGrid`
+
+#### Settable Properties
+
+| Property Name | Type | Default Value | Description |
+|--------------|------|---------------|-------------|
+| `PageSize` | `int` | `200` | Number of rows loaded per page during virtualized scrolling |
+| `HeaderBackground` | `Brush` | `#F5F5F5` | Column header background color |
+| `HeaderForeground` | `Brush` | `#1E1E1E` | Column header text color |
+| `RowHoverBackground` | `Brush` | `#F0F0F5` | Row background color on mouse hover |
+| `RowSelectedBackground` | `Brush` | `#D3D3D3` (LightGray) | Selected row background color |
+| `GridLineColor` | `Brush` | `#E6E6EB` | Grid line color |
+| `TableName` | `string` | `"TableData"` | Name of the SQLite table used for virtualization |
+| `DbPath` | `string` | *(auto-generated)* | Full path to the temporary SQLite database file (read-only) |
+
+#### Public Methods
+
+| Method Name | Return Value | Description |
+|------------|--------------|-------------|
+| `ImportData(DataTable dt)` | `void` | Bulk imports a DataTable into SQLite and resets the grid view |
+| `LoadNextPageData()` | `void` | Manually loads the next page of data |
+| `ResetLoadData()` | `void` | Resets pagination and reloads from the first page |
+| `ClearAllData()` | `void` | Clears all data from the SQLite table and resets the view |
+| `DisposeDb()` | `void` | Manually deletes the temporary database file |
+
+#### Feature Notes
+
+- **SQLite Virtualization**: Data is stored in a per-instance temporary SQLite database, loaded page-by-page as you scroll. Handles 100k+ rows smoothly.
+- **Custom Styling**: Light gray header, white rows, hover highlight, light gray selection — clean modern table look.
+- **Custom Scrollbar**: UI4ScrollViewer-style auto-hide scrollbar (10px wide, rounded thumb, fade in/out on scroll).
+- **Read-Only**: Cells are non-editable by default; full-row selection mode.
+- **Vertically Centered**: Cell content is vertically centered with text trimming.
+- **Built-in Context Menu**: Uses UI4ContextMenu with Copy and Select All commands (multi-language + icons).
+- **Auto-Cleanup**: Temporary .db file is automatically deleted when the control unloads or the process exits.
+- **Dynamic Columns**: Supports any column structure — auto-generates columns from the imported DataTable.
+- **Small Default Font**: 12px font size, 28px row height for compact, dense data display.
+
+#### Example Code
+
+```xml
+<!-- Basic data grid -->
+<ui:UI4DataGrid x:Name="Grid1" Width="600" Height="400" />
+```
+
+```csharp
+// Create test data and import
+DataTable dt = new DataTable();
+dt.Columns.Add("Name");
+dt.Columns.Add("Age");
+dt.Columns.Add("Remark");
+
+for (int i = 0; i < 100000; i++)
+{
+    DataRow row = dt.NewRow();
+    row["Name"] = $"User_{i}";
+    row["Age"] = 20 + i % 30;
+    row["Remark"] = $"Test remark {i}";
+    dt.Rows.Add(row);
+}
+
+Grid1.ImportData(dt);
+```
+
+```xml
+<!-- DataGrid with custom colors -->
+<ui:UI4DataGrid x:Name="Grid2"
+                HeaderBackground="#E8E8F0"
+                RowHoverBackground="#E0E8FF"
+                RowSelectedBackground="#B0C4DE"
+                GridLineColor="#D0D0D8"
+                PageSize="100" />
+```
+
+#### Inherited Properties
+
+Also inherits all properties from `DataGrid`, such as `ItemsSource`, `AutoGenerateColumns`, `CanUserSortColumns`, `Width`, `Height`, `FontSize`, etc.
+
+---
+
 ### UI4ScrollViewer
 
 Custom styled scroll viewer control with built-in auto-hide scrollbar and smooth scrolling animation.
@@ -1584,4 +1668,4 @@ Complete example:
 
 ## License
 
-?? KS.STUDIO - StartUI4.WPF v1.0.6
+?? KS.STUDIO - StartUI4.WPF v1.0.7
