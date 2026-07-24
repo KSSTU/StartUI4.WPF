@@ -31,7 +31,6 @@ namespace StartUI4Controls
 
     public class UI4NotifyIcon : TaskbarIcon
     {
-        #region 菜单样式依赖属性
         public double MenuWidth
         {
             get => (double)GetValue(MenuWidthProperty);
@@ -103,7 +102,6 @@ namespace StartUI4Controls
                 typeof(CornerRadius),
                 typeof(UI4NotifyIcon),
                 new FrameworkPropertyMetadata(new CornerRadius(8)));
-        #endregion
 
         private Popup _trayPopup;
         private UI4ListBox _listBox;
@@ -116,7 +114,6 @@ namespace StartUI4Controls
             BuildTrayPopup();
         }
 
-        #region 对外API
         public void AddItem(UI4TrayMenuItem item)
         {
             _menuItems.Add(item);
@@ -142,9 +139,7 @@ namespace StartUI4Controls
             if (_listBox != null)
                 _listBox.Items.Clear();
         }
-        #endregion
 
-        #region 构建Popup容器
         private void BuildTrayPopup()
         {
             _listBox = new UI4ListBox
@@ -210,11 +205,9 @@ namespace StartUI4Controls
 
             _listBox.Width = MenuWidth;
         }
-        #endregion
 
         private void OnListBoxClick(object sender, MouseButtonEventArgs e)
         {
-            // 命中测试：从鼠标位置向上查找 ListBoxItem
             var hit = _listBox.InputHitTest(e.GetPosition(_listBox)) as DependencyObject;
             while (hit != null && hit != _listBox)
             {
@@ -236,15 +229,12 @@ namespace StartUI4Controls
             }
         }
 
-        #region 托盘右键事件
         private void OnTrayRightClick(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
             OpenMenu();
         }
-        #endregion
 
-        #region 菜单弹出/关闭
         public void OpenMenu()
         {
             if (_menuItems.Count == 0) return;
@@ -269,9 +259,7 @@ namespace StartUI4Controls
             if (_listBox != null)
                 _listBox.SelectedIndex = -1;
         }
-        #endregion
 
-        #region 屏幕鼠标坐标获取（P/Invoke）
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
         {
@@ -282,7 +270,6 @@ namespace StartUI4Controls
         [DllImport("user32.dll")]
         private static extern bool GetCursorPos(out POINT lpPoint);
 
-        /// 获取鼠标在屏幕上的物理坐标，并转换为 WPF 设备无关像素（DIP）
         private Point GetMouseScreenPositionDip()
         {
             GetCursorPos(out POINT pt);
@@ -290,9 +277,7 @@ namespace StartUI4Controls
                             ?? Matrix.Identity;
             return transform.Transform(new Point(pt.X, pt.Y));
         }
-        #endregion
 
-        #region 资源释放
         public new void Dispose()
         {
             TrayRightMouseUp -= OnTrayRightClick;
@@ -301,6 +286,5 @@ namespace StartUI4Controls
             Visibility = Visibility.Collapsed;
             base.Dispose();
         }
-        #endregion
     }
 }
