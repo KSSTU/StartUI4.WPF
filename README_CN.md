@@ -24,7 +24,7 @@
 
 **StartUI4.WPF** 是一款基于 WPF .NET 6 开发的现代化 UI 控件库，完美契合 WinUI Fluent Design 设计语言。只需简单配置即可使用，支持 Windows 7 / 10 / 11 操作系统。
 
-- **版本**: 1.0.7
+- **版本**: 1.0.8
 - **作者**: KS.STUDIO
 - **目标框架**: .NET 6 (net6.0-windows7.0)
 - **NuGet 包**: StartUI4.WPF
@@ -101,6 +101,7 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 | [UI4ScrollViewer](#ui4scrollviewer-滚动视图) | ScrollViewer | 自定义滚动条，支持平滑滚动动画 |
 | [UI4MessageBox](#ui4messagebox-消息框) | Window | 自定义消息对话框 |
 | [UI4CodeEditor](#ui4codeeditor-代码编辑器) | RichTextBox | 带语法高亮的代码编辑器 |
+| [UI4NotifyIcon](#ui4notifyicon-托盘图标) | TaskbarIcon | 系统托盘图标，带自定义右键菜单 |
 
 ---
 
@@ -1637,6 +1638,92 @@ else
 
 ---
 
+### UI4NotifyIcon 托盘图标
+
+系统托盘图标控件，右键弹出与 `UI4ContextMenu` 风格一致的自定义菜单（使用 `UI4ListBox` 渲染），支持图标、多语言、`CanExecute` 禁用态等。
+
+**包含两个类**:
+- `UI4NotifyIcon` - 托盘图标控件
+- `UI4TrayMenuItem` - 托盘菜单项数据模型
+
+#### 可设置属性
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|-------|------|--------|------|
+| `MenuWidth` | `double` | `160` | 菜单宽度 |
+| `MenuItemPadding` | `Thickness` | `12,8,12,8` | 菜单项内边距 |
+| `MenuBorderColor` | `Color` | `#FFC8C8DC` (200,200,220) | 菜单边框颜色 |
+| `MenuBackground` | `Brush` | `White` | 菜单背景色 |
+| `MenuHoverBg` | `Color` | `#0A000000` (10,0,0,0) | 菜单项悬停背景色 |
+| `MenuCornerRadius` | `CornerRadius` | `8` | 菜单圆角半径 |
+
+#### UI4TrayMenuItem 属性
+
+| 属性名 | 类型 | 说明 |
+|-------|------|------|
+| `Type` | `UI4MenuItemType` | 菜单项类型（Undo, Redo, Cut, Copy, Paste, Delete, SelectAll） |
+| `Text` | `string` | 菜单项显示文本 |
+| `Icon` | `ImageSource` | 菜单项图标 |
+| `Command` | `Action` | 点击时执行的命令 |
+| `CanExecute` | `Func<bool>` | 可用性判断，返回 `false` 时菜单项呈禁用态（半透明） |
+
+#### 公共方法
+
+| 方法名 | 返回值 | 说明 |
+|-------|--------|------|
+| `AddItem(UI4TrayMenuItem item)` | `void` | 添加自定义菜单项 |
+| `AddItem(UI4MenuItemType type, Action command, Func<bool> canExecute = null)` | `void` | 添加内置类型菜单项（自动获取多语言文本和图标） |
+| `ClearMenuItems()` | `void` | 清空所有菜单项 |
+| `OpenMenu()` | `void` | 手动打开菜单（在鼠标当前位置弹出） |
+| `CloseMenu()` | `void` | 关闭菜单 |
+| `Dispose()` | `void` | 释放资源（取消事件订阅、关闭菜单、隐藏图标） |
+
+#### 示例代码
+
+```xml
+<!-- 在 XAML 中声明托盘图标 -->
+<ui:UI4NotifyIcon x:Name="trayIcon"
+                  ToolTipText="我的应用"
+                  IconSource="/Icons/app.ico"
+                  Visibility="Visible" />
+```
+
+```csharp
+// 添加内置类型菜单项（自动多语言 + 图标）
+trayIcon.AddItem(UI4MenuItemType.Copy, () => Clipboard.SetText("已复制"));
+trayIcon.AddItem(UI4MenuItemType.Delete, 
+    () => DeleteItem(), 
+    () => HasSelection);  // CanExecute: 无选中时禁用
+
+// 添加自定义菜单项
+trayIcon.AddItem(new UI4TrayMenuItem(
+    UI4MenuItemType.Copy,      // Type（自定义项也可用任意值）
+    "打开主页",                 // Text
+    UI4MenuIcons.GetIcon(UI4MenuItemType.Copy),  // Icon
+    () => OpenHomePage()        // Command
+));
+
+// 手动打开 / 关闭菜单
+trayIcon.OpenMenu();
+trayIcon.CloseMenu();
+
+// 清空菜单
+trayIcon.ClearMenuItems();
+```
+
+#### 特性说明
+
+- **右键弹出菜单**: 右键点击托盘图标时在鼠标位置弹出自定义菜单，使用 `PlacementMode.AbsolutePoint` 确保精确定位
+- **UI4ListBox 渲染**: 菜单底层使用 `UI4ListBox` 控件，与 `UI4ContextMenu` 视觉风格完全一致（圆角边框、悬停高亮、按下态、自定义滚动条）
+- **内置图标**: 通过 `UI4MenuIcons` 自动获取矢量图标（撤销、重做、剪切、复制、粘贴、删除、全选）
+- **多语言支持**: 通过 `UI4ContextMenuLanguage` 自动匹配当前系统语言（中/英/日/韩/德/法/西/俄）
+- **禁用态**: `CanExecute` 返回 `false` 时，菜单项图标透明度降为 0.3、文字降为 0.4，点击无响应
+- **淡入动画**: 菜单弹出时带 150ms 淡入动画
+- **点击外部关闭**: `StaysOpen=false`，点击菜单外部区域自动关闭
+- **高 DPI 适配**: 通过 P/Invoke `GetCursorPos` 获取屏幕物理坐标并转换为 WPF 设备无关像素，高分辨率缩放下定位准确
+
+---
+
 ## 附录：命名空间引用
 
 在所有 XAML 文件中使用前，请确保已引入命名空间：
@@ -1666,4 +1753,4 @@ else
 
 ## 许可证
 
-© KS.STUDIO - StartUI4.WPF v1.0.7
+© KS.STUDIO - StartUI4.WPF v1.0.8

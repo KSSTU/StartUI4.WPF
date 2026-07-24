@@ -24,7 +24,7 @@
 
 **StartUI4.WPF** is a modern UI control library developed based on WPF .NET 6, perfectly aligned with the WinUI Fluent Design language. Easy to configure and use, supports Windows 7 / 10 / 11 operating systems.
 
-- **Version**: 1.0.7
+- **Version**: 1.0.8
 - **Author**: KS.STUDIO
 - **Target Framework**: .NET 6 (net6.0-windows7.0)
 - **NuGet Package**: StartUI4.WPF
@@ -103,6 +103,7 @@ xmlns:ui="clr-namespace:StartUI4Controls;assembly=StartUI4Controls"
 | [UI4ScrollViewer](#ui4scrollviewer) | ScrollViewer | Custom scrollbar with smooth scrolling animation |
 | [UI4MessageBox](#ui4messagebox) | Window | Custom message dialog box |
 | [UI4CodeEditor](#ui4codeeditor) | RichTextBox | Code editor with syntax highlighting |
+| [UI4NotifyIcon](#ui4notifyicon) | TaskbarIcon | System tray icon with custom right-click menu |
 
 ---
 
@@ -1639,6 +1640,92 @@ Built-in C# syntax highlighting, supports the following types:
 
 ---
 
+### UI4NotifyIcon
+
+System tray icon control, with a custom right-click menu rendered using `UI4ListBox` — visually consistent with `UI4ContextMenu`. Supports icons, multi-language, and `CanExecute` disabled state.
+
+**Contains two classes**:
+- `UI4NotifyIcon` - Tray icon control
+- `UI4TrayMenuItem` - Tray menu item data model
+
+#### Settable Properties
+
+| Property Name | Type | Default Value | Description |
+|--------------|------|---------------|-------------|
+| `MenuWidth` | `double` | `160` | Menu width |
+| `MenuItemPadding` | `Thickness` | `12,8,12,8` | Menu item padding |
+| `MenuBorderColor` | `Color` | `#FFC8C8DC` (200,200,220) | Menu border color |
+| `MenuBackground` | `Brush` | `White` | Menu background color |
+| `MenuHoverBg` | `Color` | `#0A000000` (10,0,0,0) | Menu item hover background color |
+| `MenuCornerRadius` | `CornerRadius` | `8` | Menu corner radius |
+
+#### UI4TrayMenuItem Properties
+
+| Property Name | Type | Description |
+|--------------|------|-------------|
+| `Type` | `UI4MenuItemType` | Menu item type (Undo, Redo, Cut, Copy, Paste, Delete, SelectAll) |
+| `Text` | `string` | Menu item display text |
+| `Icon` | `ImageSource` | Menu item icon |
+| `Command` | `Action` | Command to execute on click |
+| `CanExecute` | `Func<bool>` | Availability check; returns `false` to show item in disabled state (semi-transparent) |
+
+#### Public Methods
+
+| Method Name | Return Value | Description |
+|------------|--------------|-------------|
+| `AddItem(UI4TrayMenuItem item)` | `void` | Add a custom menu item |
+| `AddItem(UI4MenuItemType type, Action command, Func<bool> canExecute = null)` | `void` | Add a built-in type menu item (auto-gets localized text and icon) |
+| `ClearMenuItems()` | `void` | Clear all menu items |
+| `OpenMenu()` | `void` | Manually open the menu (pops up at current mouse position) |
+| `CloseMenu()` | `void` | Close the menu |
+| `Dispose()` | `void` | Release resources (unsubscribes events, closes menu, hides icon) |
+
+#### Example Code
+
+```xml
+<!-- Declare tray icon in XAML -->
+<ui:UI4NotifyIcon x:Name="trayIcon"
+                  ToolTipText="My App"
+                  IconSource="/Icons/app.ico"
+                  Visibility="Visible" />
+```
+
+```csharp
+// Add built-in type menu items (auto localized + icon)
+trayIcon.AddItem(UI4MenuItemType.Copy, () => Clipboard.SetText("Copied"));
+trayIcon.AddItem(UI4MenuItemType.Delete, 
+    () => DeleteItem(), 
+    () => HasSelection);  // CanExecute: disabled when no selection
+
+// Add a custom menu item
+trayIcon.AddItem(new UI4TrayMenuItem(
+    UI4MenuItemType.Copy,      // Type
+    "Open Homepage",            // Text
+    UI4MenuIcons.GetIcon(UI4MenuItemType.Copy),  // Icon
+    () => OpenHomePage()        // Command
+));
+
+// Manually open / close menu
+trayIcon.OpenMenu();
+trayIcon.CloseMenu();
+
+// Clear menu
+trayIcon.ClearMenuItems();
+```
+
+#### Feature Notes
+
+- **Right-click Menu**: Right-clicking the tray icon pops up a custom menu at the mouse position using `PlacementMode.AbsolutePoint` for precise positioning
+- **UI4ListBox Rendering**: The menu uses `UI4ListBox` internally, visually identical to `UI4ContextMenu` (rounded border, hover highlight, pressed state, custom scrollbar)
+- **Built-in Icons**: Auto-gets vector icons via `UI4MenuIcons` (Undo, Redo, Cut, Copy, Paste, Delete, Select All)
+- **Multi-language**: Auto-matches system language via `UI4ContextMenuLanguage` (Chinese/English/Japanese/Korean/German/French/Spanish/Russian)
+- **Disabled State**: When `CanExecute` returns `false`, the item icon opacity drops to 0.3 and text to 0.4; clicks are ignored
+- **Fade-in Animation**: Menu pops up with a 150ms fade-in animation
+- **Click-outside to Close**: `StaysOpen=false` — clicking outside the menu closes it automatically
+- **High DPI Support**: Uses P/Invoke `GetCursorPos` to get physical screen coordinates and converts to WPF device-independent pixels for accurate positioning under high DPI scaling
+
+---
+
 ## Appendix: Namespace Reference
 
 Before using in any XAML file, make sure the namespace is imported:
@@ -1668,4 +1755,4 @@ Complete example:
 
 ## License
 
-?? KS.STUDIO - StartUI4.WPF v1.0.7
+?? KS.STUDIO - StartUI4.WPF v1.0.8
